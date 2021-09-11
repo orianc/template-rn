@@ -1,15 +1,39 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { LoginScreen } from '@/Containers'
+import { LoginScreen, FeedScreen, ArticleScreen } from '@/Containers'
 
-const LoginStack = createStackNavigator()
+const MainStack = createStackNavigator()
+const FeedStack = createStackNavigator()
+const ArticleStack = createStackNavigator()
 
 const MainNavigator = () => {
     return (
-        <LoginStack.Navigator screenOptions={{ headerShown: false }}>
-            <LoginStack.Screen name="LoginScreen" component={LoginScreen} />
-        </LoginStack.Navigator>
+        <MainStack.Navigator screenOptions={{ headerShown: false }}>
+            <MainStack.Screen name="LoginScreen" component={LoginScreen} />
+        </MainStack.Navigator>
+    )
+}
+const FeedNavigator = () => {
+    return (
+        <FeedStack.Navigator screenOptions={{ headerShown: false }}>
+            <FeedStack.Screen name="FeedScreen" component={FeedScreen} />
+        </FeedStack.Navigator>
+    )
+}
+const ArticleNavigator = () => {
+    return (
+        <ArticleStack.Navigator screenOptions={{ headerShown: false }}>
+            <ArticleStack.Screen
+                name="ArticleScreen"
+                component={ArticleScreen}
+            />
+        </ArticleStack.Navigator>
     )
 }
 
-export default MainNavigator
+const StackNav = {
+    MainNavigator,
+    FeedNavigator,
+    ArticleNavigator,
+}
+export default StackNav

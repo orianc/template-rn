@@ -12,7 +12,7 @@ export default StyleSheet.create({
     },
     contentContainer: {
         width: Metrics.widthPercentageToDP('100%'),
-        height: Metrics.heightPercentageToDP('80%'),
+        height: Metrics.heightPercentageToDP('70%'),
         paddingHorizontal: Metrics.paddingHorizontal,
         backgroundColor: Colors.white,
         borderTopLeftRadius: 15,
@@ -41,8 +41,8 @@ export default StyleSheet.create({
         height: Metrics.heightPercentageToDP('29%'),
         resizeMode: 'contain',
         position: 'absolute',
-        right: -15,
-        top: -25,
+        right: -10,
+        top: 0,
     },
     title: {
         fontFamily: Fonts.type.bold,
@@ -62,7 +62,7 @@ export default StyleSheet.create({
         fontFamily: Fonts.type.medium,
         fontSize: 14,
         color: Colors.text,
-        opacity: 0.4,
+        // opacity: 0.4,
         marginBottom: 10,
     },
     forgetPasswordContainer: {
@@ -84,5 +84,8 @@ export default StyleSheet.create({
         fontFamily: Fonts.type.base,
         color: Colors.text,
         opacity: 0.7,
+    },
+    connectButton: {
+        marginTop: 50,
     },
 })

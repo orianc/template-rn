@@ -7,6 +7,7 @@ import { persistor } from '@/Store'
 import { ApplicationNavigator } from '@/Navigators'
 import './Translations'
 import configureStore from '@/Store/configureStore'
+// test
 
 const App = () => {
     const store = configureStore()
