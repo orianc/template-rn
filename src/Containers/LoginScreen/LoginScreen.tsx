@@ -53,8 +53,6 @@ const LoginScreen = ({ navigation }: Props) => {
     const { firstName, lastName } = registerInfo
     const [toggler, setToggler] = useState('login')
 
-    console.log('LoginScreenObs = ', email, password, firstName, lastName)
-
     useEffect(() => {
         if (AuthState.token) {
             navigation.push('Actualité')

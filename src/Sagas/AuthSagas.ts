@@ -10,7 +10,7 @@ function* loginCall({ email, password }: actionTypes.LoginAction) {
         email: email,
         password: password,
     }
-    yield console.log('params in loginCall = ', params)
+    // yield console.log('params in loginCall = ', params)
     try {
         const { data } = yield call(fetchLogin, params)
 
