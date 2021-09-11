@@ -2,6 +2,7 @@ const Colors = {
     // Example colors:
     transparent: 'rgba(0,0,0,0)',
     inputBackground: '#FFFFFF',
+    backgroundNews: '#1741658E',
     success: '#28a745',
     error: '#dc3545',
 

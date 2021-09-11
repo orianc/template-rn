@@ -5,8 +5,6 @@ interface newsResponse {
 }
 
 export async function fetchNews(token: string): Promise<newsResponse> {
-    console.log('in fetchNews token:', token)
-
     const config = {
         headers: { Authorization: `Bearer ${token}` },
     }
