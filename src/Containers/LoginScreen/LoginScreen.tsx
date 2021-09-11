@@ -1,29 +1,90 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TextInput, ScrollView, Image } from 'react-native'
-import { Common, Images } from '@/Theme'
-import { BasicButton } from '../../Components/index'
+import { ScrollView, View, Text, TextInput, Image, Alert } from 'react-native'
+// navigation setup
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 type RootStackParamList = {
     Home: undefined
-    FeedScreen: { sort: 'latest' | 'top' } | undefined
+    LoginScreen: String
+    FeedScreen: String
 }
 type Props = NativeStackScreenProps<RootStackParamList, 'LoginScreen'>
-
+// redux
+import { useDispatch, useSelector } from 'react-redux'
+import { login, register } from '@/ActionCreators/AuthActionCreator'
+// services
+// import {
+//     RegisterService,
+//     LoginService,
+// } from '@/Services/Api/Authentification/index'
+// theme & style
+import { Common, Images } from '@/Theme'
 import styles from './LoginScreenStyles'
+// components
+import { BasicButton } from '../../Components/index'
 
+const mapState = ({ auth }: any) => ({
+    AuthState: auth,
+})
+
+interface initialState {
+    email: String
+    password: String
+    uuid: String
+}
 const initialState = {
-    mail: {},
-    password: {},
+    email: '',
+    password: '',
+    uuid: '',
+}
+const RegisterInitialState = {
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
 }
 
 const LoginScreen = ({ navigation }: Props) => {
-    const [userMail, setUserMail] = useState(initialState.mail)
-    const [userPassword, setUserPassword] = useState(initialState.password)
+    const { AuthState } = useSelector(mapState)
 
-    useEffect(() => {}, [])
+    const dispatch = useDispatch()
+    const [credential, setCredential] = useState(initialState)
+    const [registerInfo, setRegisterInfo] = useState(RegisterInitialState)
+    const { email, password } = credential
+    const { firstName, lastName } = registerInfo
+    const [toggler, setToggler] = useState('login')
 
-    const pressHandler = () => {
-        navigation.push('Actualité')
+    console.log('LoginScreenObs = ', email, password, firstName, lastName)
+
+    useEffect(() => {
+        if (AuthState.token) {
+            navigation.push('Actualité')
+        }
+    }, [AuthState])
+
+    const handleRegister = async () => {
+        try {
+            var uuid = Math.random().toString()
+            await dispatch(register(email, password, firstName, lastName, uuid))
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    const handleLogin = async () => {
+        try {
+            var uuid = Math.random().toString()
+            await dispatch(login(email, password, uuid))
+            // if (!AuthState.token) {
+            //     return Alert.alert('Error')
+            // }
+            if (AuthState.token) {
+                setCredential(initialState)
+                return navigation.push('Actualité')
+            }
+            if (!AuthState.token) Alert.alert('Error', 'Connection failed')
+        } catch (e) {
+            console.log('error on handleLogin', e)
+        }
     }
 
     return (
@@ -32,39 +93,174 @@ const LoginScreen = ({ navigation }: Props) => {
                 source={Images.loginBackground}
                 style={styles.backgroundImage}
             />
-            <ScrollView style={styles.contentContainer}>
+            <View style={styles.contentContainer}>
                 <View style={styles.content}>
-                    <View style={styles.sectionTitle}>
-                        <Text style={styles.title}>Connexion</Text>
+                    <View
+                        style={[
+                            styles.sectionTitle,
+                            { display: 'flex', flexDirection: 'row' },
+                        ]}
+                    >
+                        <Text
+                            style={
+                                toggler === 'login'
+                                    ? [styles.title, { width: '50%' }]
+                                    : [
+                                          styles.title,
+                                          { width: '50%', opacity: 0.4 },
+                                      ]
+                            }
+                            onPress={() => setToggler('login')}
+                        >
+                            Connexion
+                        </Text>
+                        <Text
+                            style={
+                                toggler === 'register'
+                                    ? [styles.title, { width: '50%' }]
+                                    : [
+                                          styles.title,
+                                          { width: '50%', opacity: 0.4 },
+                                      ]
+                            }
+                            onPress={() => setToggler('register')}
+                        >
+                            Inscription
+                        </Text>
                     </View>
-                    <View style={styles.mailContainer}>
-                        <Text style={styles.sectionTitle}>Adresse mail</Text>
-                        <TextInput
-                            style={[styles.input, Common.basicShadow]}
-                            placeholder="contact@mail.com"
-                            onChangeText={text => setUserMail(text)}
-                            textContentType="emailAddress"
-                        />
-                    </View>
-                    <View style={styles.passwordContainer}>
-                        <Text style={styles.sectionTitle}>Mot de passe</Text>
-                        <TextInput
-                            style={[styles.input, Common.basicShadow]}
-                            placeholder="password"
-                            secureTextEntry={true}
-                            textContentType="password"
-                            onChangeText={text => setUserPassword(text)}
-                        />
-                    </View>
-                    <View>
-                        <BasicButton
-                            style={styles.connectButton}
-                            onPress={pressHandler}
-                            text="Se connecter"
-                        />
-                    </View>
+                    {toggler === 'login' && (
+                        <>
+                            <View style={styles.mailContainer}>
+                                <Text style={styles.sectionTitle}>
+                                    Adresse mail
+                                </Text>
+                                <TextInput
+                                    style={[styles.input, Common.basicShadow]}
+                                    placeholder="contact@mail.com"
+                                    onChangeText={text =>
+                                        setCredential({
+                                            ...credential,
+                                            email: text,
+                                        })
+                                    }
+                                    textContentType="emailAddress"
+                                />
+                            </View>
+                            <View style={styles.passwordContainer}>
+                                <Text style={styles.sectionTitle}>
+                                    Mot de passe
+                                </Text>
+                                <TextInput
+                                    style={[styles.input, Common.basicShadow]}
+                                    placeholder="password"
+                                    secureTextEntry={true}
+                                    textContentType="password"
+                                    onChangeText={text =>
+                                        setCredential({
+                                            ...credential,
+                                            password: text,
+                                        })
+                                    }
+                                />
+                            </View>
+                            <BasicButton
+                                style={styles.connectButton}
+                                onPress={() => handleLogin()}
+                                text="Se connecter"
+                            />
+                        </>
+                    )}
                 </View>
-            </ScrollView>
+                <View style={styles.content}>
+                    {toggler === 'register' && (
+                        <ScrollView>
+                            <>
+                                <View style={styles.mailContainer}>
+                                    <Text style={styles.sectionTitle}>
+                                        Adresse mail
+                                    </Text>
+                                    <TextInput
+                                        style={[
+                                            styles.input,
+                                            Common.basicShadow,
+                                        ]}
+                                        placeholder="contact@mail.com"
+                                        onChangeText={text =>
+                                            setCredential({
+                                                ...credential,
+                                                email: text,
+                                            })
+                                        }
+                                        textContentType="emailAddress"
+                                    />
+                                </View>
+                                <View style={styles.passwordContainer}>
+                                    <Text style={styles.sectionTitle}>
+                                        Mot de passe
+                                    </Text>
+                                    <TextInput
+                                        style={[
+                                            styles.input,
+                                            Common.basicShadow,
+                                        ]}
+                                        placeholder="password"
+                                        secureTextEntry={true}
+                                        textContentType="password"
+                                        onChangeText={text =>
+                                            setCredential({
+                                                ...credential,
+                                                password: text,
+                                            })
+                                        }
+                                    />
+                                </View>
+                                <View style={styles.passwordContainer}>
+                                    <Text style={styles.sectionTitle}>
+                                        Prénom
+                                    </Text>
+                                    <TextInput
+                                        style={[
+                                            styles.input,
+                                            Common.basicShadow,
+                                        ]}
+                                        placeholder="prénom"
+                                        textContentType="name"
+                                        onChangeText={text =>
+                                            setRegisterInfo({
+                                                ...registerInfo,
+                                                firstName: text,
+                                            })
+                                        }
+                                    />
+                                </View>
+                                <View style={styles.passwordContainer}>
+                                    <Text style={styles.sectionTitle}>Nom</Text>
+                                    <TextInput
+                                        style={[
+                                            styles.input,
+                                            Common.basicShadow,
+                                        ]}
+                                        placeholder="Nom"
+                                        textContentType="familyName"
+                                        onChangeText={text =>
+                                            setRegisterInfo({
+                                                ...registerInfo,
+                                                lastName: text,
+                                            })
+                                        }
+                                    />
+                                    {/* pourquoi ce button ne veut plus apparaitre omg ! */}
+                                    <BasicButton
+                                        text="S'inscrire"
+                                        style={styles.connectButton}
+                                        onPress={() => handleRegister()}
+                                    />
+                                </View>
+                            </>
+                        </ScrollView>
+                    )}
+                </View>
+            </View>
         </View>
     )
 }

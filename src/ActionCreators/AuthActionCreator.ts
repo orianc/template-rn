@@ -2,13 +2,13 @@ import * as actions from '@/ActionTypes/AuthActionTypes'
 import { User } from '@/Models'
 
 export function login(
-    username: string,
+    email: string,
     password: string,
     udid: string,
 ): actions.LoginAction {
     return {
         type: actions.LOGIN,
-        username,
+        email,
         password,
         udid,
     }
@@ -30,12 +30,12 @@ export function loginFailure(
 ): actions.LoginFailureAction {
     return {
         type: actions.LOGIN_FAILURE,
-        error,
+        error: error,
     }
 }
 
 export function register(
-    username: string,
+    email: string,
     password: string,
     firstname: string,
     lastname: string,
@@ -43,7 +43,7 @@ export function register(
 ): actions.RegisterAction {
     return {
         type: actions.REGISTER,
-        username,
+        email,
         password,
         firstname,
         lastname,

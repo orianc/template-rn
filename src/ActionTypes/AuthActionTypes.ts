@@ -3,7 +3,7 @@ import { User } from '@/Models'
 export const LOGIN = 'AuthActionTypes/LOGIN'
 export interface LoginAction {
     type: typeof LOGIN
-    username: string
+    email: string
     password: string
     udid: string
 }
@@ -24,7 +24,7 @@ export interface LoginFailureAction {
 export const REGISTER = 'AuthActionTypes/REGISTER'
 export interface RegisterAction {
     type: typeof REGISTER
-    username: string
+    email: string
     password: string
     firstname: string
     lastname: string

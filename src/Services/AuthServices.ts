@@ -5,9 +5,13 @@ interface loginResponse {
 }
 
 export async function fetchLogin(params: Object): Promise<loginResponse> {
-    const response = await api.post('auth/login', params)
+    try {
+        const response = await api.post('auth/token', params)
 
-    return response
+        return response
+    } catch (e) {
+        console.error(e)
+    }
 }
 
 interface registerResponse {

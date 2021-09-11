@@ -5,14 +5,15 @@ import * as actionTypes from '@/ActionTypes/AuthActionTypes'
 
 import api from '@/Services'
 
-function* loginCall({ username, password, udid }: actionTypes.LoginAction) {
+function* loginCall({ email, password }: actionTypes.LoginAction) {
     const params = {
-        username: username,
+        email: email,
         password: password,
-        udid: udid,
     }
+    yield console.log('params in loginCall = ', params)
     try {
         const { data } = yield call(fetchLogin, params)
+
         api.defaults.headers = {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -25,18 +26,16 @@ function* loginCall({ username, password, udid }: actionTypes.LoginAction) {
 }
 
 function* registerCall({
-    username,
+    email,
     password,
     firstname,
     lastname,
-    udid,
 }: actionTypes.RegisterAction) {
     const params = {
-        username: username,
+        email: email,
         password: password,
         firstname: firstname,
         lastname: lastname,
-        udid: udid,
     }
     try {
         const { data } = yield call(fetchRegister, params)

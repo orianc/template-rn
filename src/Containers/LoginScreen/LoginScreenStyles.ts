@@ -87,5 +87,6 @@ export default StyleSheet.create({
     },
     connectButton: {
         marginTop: 50,
+        marginBottom: 5,
     },
 })

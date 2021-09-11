@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable prettier/prettier */
 import * as actions from '@/ActionTypes/AuthActionTypes'
 import { User } from '@/Models'
@@ -22,43 +23,52 @@ export default function authReducer(
     action: actions.AuthActions,
 ): AuthState {
     switch (action.type) {
-    case actions.LOGIN:
-        return {
-            isLoading: true,
-            error: null,
-        }
-    case actions.LOGIN_SUCCESS:
-        return {
-            isLoading: false,
-            error: null,
-            token: action.token,
-            refreshToken: action.refreshToken,
-        }
-    case actions.LOGIN_FAILURE:
-        return {
-            isLoading: false,
-            error: action.error,
-        }
-    case actions.REGISTER:
-        return {
-            isLoading: true,
-            error: null,
-            user: undefined,
-        }
-    case actions.REGISTER_SUCCESS:
-        return {
-            isLoading: false,
-            error: null,
-            user: action.user,
-            token: action.token,
-            refreshToken: action.refreshToken,
-        }
-    case actions.REGISTER_FAILURE:
-        return {
-            isLoading: false,
-            error: action.error,
-        }
-    default:
-        return state
+        case actions.LOGIN:
+            return {
+                ...state,
+                isLoading: true,
+                error: null,
+            }
+        case actions.LOGIN_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                token: action.token,
+                refreshToken: action.refreshToken,
+            }
+        case actions.LOGIN_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error,
+                token: undefined,
+                refreshToken: undefined,
+                user: undefined,
+            }
+        case actions.REGISTER:
+            return {
+                ...state,
+                isLoading: true,
+                error: null,
+                user: undefined,
+            }
+        case actions.REGISTER_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                user: action.user,
+                token: action.token,
+                refreshToken: action.refreshToken,
+            }
+        case actions.REGISTER_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error,
+            }
+        default:
+            return state
     }
 }
