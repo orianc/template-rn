@@ -86,7 +86,12 @@ export default StyleSheet.create({
         opacity: 0.7,
     },
     connectButton: {
-        marginTop: 50,
-        marginBottom: 5,
+        marginTop: 15,
+        marginBottom: 15,
+    },
+    scrollContent: {
+        paddingTop: 0,
+        paddingBottom: 5,
+        height: 400,
     },
 })

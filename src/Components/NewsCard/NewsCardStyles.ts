@@ -1,14 +1,11 @@
 import { StyleSheet } from 'react-native'
-import { Colors, FontsTypes, Metrics } from '@/Theme'
+import { Colors } from '@/Theme'
 
 export default StyleSheet.create({
-    feed: {
-        // minHeight: Metrics.heightPercentageToDP('120%'),
-        paddingBottom: 50,
-    },
-
-    reload: {
-        backgroundColor: 'red',
+    sizingCard: {
+        borderStartColor: 'black',
+        paddingTop: 10,
+        paddingBottom: 10,
     },
     articleCard: {
         padding: 9,
@@ -17,6 +14,10 @@ export default StyleSheet.create({
         marginTop: 10,
     },
     imageNews: {
+        width: '100%',
+        height: '100%',
+        zIndex: -1,
+        opacity: 1,
         resizeMode: 'cover',
     },
     newsTitle: {
@@ -27,6 +28,7 @@ export default StyleSheet.create({
         paddingTop: '25%',
     },
     upSetBlue: {
+        height: 176,
         backgroundColor: Colors.backgroundNews,
         borderRadius: 10,
     },

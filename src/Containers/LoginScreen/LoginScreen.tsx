@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, View, Text, TextInput, Image, Alert } from 'react-native'
+import { ScrollView, View, Text, TextInput, Image } from 'react-native'
 // navigation setup
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 type RootStackParamList = {
@@ -14,13 +14,13 @@ import { login, register } from '@/ActionCreators/AuthActionCreator'
 // services
 // import {
 //     RegisterService,
-//     LoginService,
 // } from '@/Services/Api/Authentification/index'
 // theme & style
 import { Common, Images } from '@/Theme'
 import styles from './LoginScreenStyles'
 // components
 import { BasicButton } from '../../Components/index'
+import AlertLogin from '@/Components/AlertLogin/AlertLogin'
 
 const mapState = ({ auth }: any) => ({
     AuthState: auth,
@@ -45,17 +45,21 @@ const RegisterInitialState = {
 
 const LoginScreen = ({ navigation }: Props) => {
     const { AuthState } = useSelector(mapState)
-
     const dispatch = useDispatch()
+
+    // console.log(AuthState)
+
     const [credential, setCredential] = useState(initialState)
     const [registerInfo, setRegisterInfo] = useState(RegisterInitialState)
+    const [toggler, setToggler] = useState('login')
+    const [displayAlert, setDisplayAlert] = useState('')
+
     const { email, password } = credential
     const { firstName, lastName } = registerInfo
-    const [toggler, setToggler] = useState('login')
 
     useEffect(() => {
         if (AuthState.token) {
-            navigation.push('Actualité')
+            return navigation.push('Actualité')
         }
     }, [AuthState])
 
@@ -63,6 +67,15 @@ const LoginScreen = ({ navigation }: Props) => {
         try {
             var uuid = Math.random().toString()
             await dispatch(register(email, password, firstName, lastName, uuid))
+            if (AuthState.token) {
+                setDisplayAlert('success')
+                setCredential(initialState)
+                return navigation.push('Actualité')
+            }
+            setDisplayAlert('error')
+            return setTimeout(() => {
+                setDisplayAlert('')
+            }, 3000)
         } catch (e) {
             console.error(e)
         }
@@ -72,14 +85,15 @@ const LoginScreen = ({ navigation }: Props) => {
         try {
             var uuid = Math.random().toString()
             await dispatch(login(email, password, uuid))
-            // if (!AuthState.token) {
-            //     return Alert.alert('Error')
-            // }
             if (AuthState.token) {
+                setDisplayAlert('success')
                 setCredential(initialState)
                 return navigation.push('Actualité')
             }
-            if (!AuthState.token) Alert.alert('Error', 'Connection failed')
+            setDisplayAlert('error')
+            return setTimeout(() => {
+                setDisplayAlert('')
+            }, 3000)
         } catch (e) {
             console.log('error on handleLogin', e)
         }
@@ -91,6 +105,9 @@ const LoginScreen = ({ navigation }: Props) => {
                 source={Images.loginBackground}
                 style={styles.backgroundImage}
             />
+            {displayAlert === 'success' || 'error' ? (
+                <AlertLogin type={displayAlert} />
+            ) : null}
             <View style={styles.contentContainer}>
                 <View style={styles.content}>
                     <View
@@ -171,90 +188,74 @@ const LoginScreen = ({ navigation }: Props) => {
                 </View>
                 <View style={styles.content}>
                     {toggler === 'register' && (
-                        <ScrollView>
-                            <>
-                                <View style={styles.mailContainer}>
-                                    <Text style={styles.sectionTitle}>
-                                        Adresse mail
-                                    </Text>
-                                    <TextInput
-                                        style={[
-                                            styles.input,
-                                            Common.basicShadow,
-                                        ]}
-                                        placeholder="contact@mail.com"
-                                        onChangeText={text =>
-                                            setCredential({
-                                                ...credential,
-                                                email: text,
-                                            })
-                                        }
-                                        textContentType="emailAddress"
-                                    />
-                                </View>
-                                <View style={styles.passwordContainer}>
-                                    <Text style={styles.sectionTitle}>
-                                        Mot de passe
-                                    </Text>
-                                    <TextInput
-                                        style={[
-                                            styles.input,
-                                            Common.basicShadow,
-                                        ]}
-                                        placeholder="password"
-                                        secureTextEntry={true}
-                                        textContentType="password"
-                                        onChangeText={text =>
-                                            setCredential({
-                                                ...credential,
-                                                password: text,
-                                            })
-                                        }
-                                    />
-                                </View>
-                                <View style={styles.passwordContainer}>
-                                    <Text style={styles.sectionTitle}>
-                                        Prénom
-                                    </Text>
-                                    <TextInput
-                                        style={[
-                                            styles.input,
-                                            Common.basicShadow,
-                                        ]}
-                                        placeholder="prénom"
-                                        textContentType="name"
-                                        onChangeText={text =>
-                                            setRegisterInfo({
-                                                ...registerInfo,
-                                                firstName: text,
-                                            })
-                                        }
-                                    />
-                                </View>
-                                <View style={styles.passwordContainer}>
-                                    <Text style={styles.sectionTitle}>Nom</Text>
-                                    <TextInput
-                                        style={[
-                                            styles.input,
-                                            Common.basicShadow,
-                                        ]}
-                                        placeholder="Nom"
-                                        textContentType="familyName"
-                                        onChangeText={text =>
-                                            setRegisterInfo({
-                                                ...registerInfo,
-                                                lastName: text,
-                                            })
-                                        }
-                                    />
-                                    {/* pourquoi ce button ne veut plus apparaitre omg ! */}
-                                    <BasicButton
-                                        text="S'inscrire"
-                                        style={styles.connectButton}
-                                        onPress={() => handleRegister()}
-                                    />
-                                </View>
-                            </>
+                        <ScrollView style={styles.scrollContent}>
+                            <View style={styles.mailContainer}>
+                                <Text style={styles.sectionTitle}>
+                                    Adresse mail
+                                </Text>
+                                <TextInput
+                                    style={[styles.input, Common.basicShadow]}
+                                    placeholder="contact@mail.com"
+                                    onChangeText={text =>
+                                        setCredential({
+                                            ...credential,
+                                            email: text,
+                                        })
+                                    }
+                                    textContentType="emailAddress"
+                                />
+                            </View>
+                            <View style={styles.passwordContainer}>
+                                <Text style={styles.sectionTitle}>
+                                    Mot de passe
+                                </Text>
+                                <TextInput
+                                    style={[styles.input, Common.basicShadow]}
+                                    placeholder="password"
+                                    secureTextEntry={true}
+                                    textContentType="password"
+                                    onChangeText={text =>
+                                        setCredential({
+                                            ...credential,
+                                            password: text,
+                                        })
+                                    }
+                                />
+                            </View>
+                            <View style={styles.passwordContainer}>
+                                <Text style={styles.sectionTitle}>Prénom</Text>
+                                <TextInput
+                                    style={[styles.input, Common.basicShadow]}
+                                    placeholder="prénom"
+                                    textContentType="name"
+                                    onChangeText={text =>
+                                        setRegisterInfo({
+                                            ...registerInfo,
+                                            firstName: text,
+                                        })
+                                    }
+                                />
+                            </View>
+                            <View style={styles.passwordContainer}>
+                                <Text style={styles.sectionTitle}>Nom</Text>
+                                <TextInput
+                                    style={[styles.input, Common.basicShadow]}
+                                    placeholder="Nom"
+                                    textContentType="familyName"
+                                    onChangeText={text =>
+                                        setRegisterInfo({
+                                            ...registerInfo,
+                                            lastName: text,
+                                        })
+                                    }
+                                />
+                                {/* pourquoi ce button ne veut plus apparaitre omg ! */}
+                            </View>
+                            <BasicButton
+                                text="S'inscrire"
+                                style={styles.connectButton}
+                                onPress={() => handleRegister()}
+                            />
                         </ScrollView>
                     )}
                 </View>

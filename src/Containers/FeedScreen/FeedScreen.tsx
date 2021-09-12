@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import {
-    View,
-    Text,
-    ScrollView,
-    Image,
-    Button,
-    ImageBackground,
-} from 'react-native'
-import { Common } from '@/Theme'
+import { View, Text, ScrollView, Button, ImageBackground } from 'react-native'
+import { Common, FontsTypes } from '@/Theme'
 import { useDispatch, useSelector } from 'react-redux'
 import { getNews } from '@/ActionCreators/NewsActionCreators'
 import styles from './FeedScreenStyles'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import NewsCard from '@/Components/NewsCard/NewsCard'
 
-interface mapState {
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+type RootStackParamList = {
+    Home: undefined
+    LoginScreen: String
+    FeedScreen: String
+    ArticleScreen: String
+}
+type Props = NativeStackScreenProps<RootStackParamList, 'FeedScreen'>
+
+interface FeedProps {
     news: any
+    auth: Object
     token: string
 }
 
-const mapState = ({ news, auth }) => ({
+const mapState = ({ news, auth }: FeedProps) => ({
     news: news,
     token: auth.token,
 })
@@ -25,17 +30,18 @@ const mapState = ({ news, auth }) => ({
 const FeedScreen = ({ navigation }: Props) => {
     const dispatch = useDispatch()
     const { news, token } = useSelector(mapState)
-    // console.log('token :', token)
     const [reload, setReload] = useState(1)
     const allNews = news.news
 
+    // console.log('news :', allNews)
+    // console.log('token :', token)
+
     const fetchingNews = () => {
-        if (!token) navigation.pop()
+        if (!token) navigation.goBack()
         dispatch(getNews(token))
     }
 
     useEffect(() => {
-        console.log('news :', allNews)
         fetchingNews()
     }, [reload])
 
@@ -50,24 +56,18 @@ const FeedScreen = ({ navigation }: Props) => {
                         }}
                     />
                 </View>
-                <ScrollView>
+                <ScrollView style={styles.feed}>
                     {allNews.length > 0 ? (
                         allNews.map(art => (
-                            <View style={styles.articleCard} key={art.id}>
-                                <ImageBackground
-                                    style={styles.imageNews}
-                                    source={{ uri: art.image }}
-                                >
-                                    {/* setup background blue with opacity, and w100 h100 */}
-                                    <View>
-                                        <Text>{art.date}</Text>
-
-                                        <Text style={styles.newsTitle}>
-                                            {art.title}
-                                        </Text>
-                                    </View>
-                                </ImageBackground>
-                            </View>
+                            <NewsCard
+                                art={art}
+                                onPress={() =>
+                                    navigation.navigate({
+                                        name: 'Article',
+                                        params: { data: 'test' },
+                                    })
+                                }
+                            />
                         ))
                     ) : news.loading ? (
                         <View>

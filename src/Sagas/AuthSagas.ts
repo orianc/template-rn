@@ -17,7 +17,7 @@ function* loginCall({ email, password }: actionTypes.LoginAction) {
         api.defaults.headers = {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${data.token}`,
+            // Authorization: `Bearer ${data.token}`,
         }
         yield put(actionCreators.loginSuccess(data.token, data.refreshToken))
     } catch (error) {
@@ -25,17 +25,10 @@ function* loginCall({ email, password }: actionTypes.LoginAction) {
     }
 }
 
-function* registerCall({
-    email,
-    password,
-    firstname,
-    lastname,
-}: actionTypes.RegisterAction) {
+function* registerCall({ email, password }: actionTypes.RegisterAction) {
     const params = {
         email: email,
         password: password,
-        firstname: firstname,
-        lastname: lastname,
     }
     try {
         const { data } = yield call(fetchRegister, params)
@@ -43,8 +36,10 @@ function* registerCall({
         api.defaults.headers = {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${data.token}`,
+            // Authorization: `Bearer ${data.token}`,
         }
+        console.log('data from fetchRegister in Saga', data)
+
         yield put(actionCreators.registerSuccess(token, refreshToken, user))
     } catch (error) {
         yield put(actionCreators.registerFailure(error))
